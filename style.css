@@ -1,0 +1,1192 @@
+/* ============================================================
+   SignosSemáforo - Estilos CSS (Clean & Clinical Mobile-First)
+   100% Autónomo sin dependencias externas
+   ============================================================ */
+
+:root {
+  --primary: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-light: #ccfbf1;
+  --primary-dark: #115e59;
+  
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --border-focus: #0d9488;
+  
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+
+  /* Semáforo Clínico */
+  --traffic-green-bg: #dcfce7;
+  --traffic-green-text: #166534;
+  --traffic-green-border: #86efac;
+  --traffic-green-dot: #22c55e;
+
+  --traffic-yellow-bg: #fef9c3;
+  --traffic-yellow-text: #854d0e;
+  --traffic-yellow-border: #fde047;
+  --traffic-yellow-dot: #eab308;
+
+  --traffic-red-bg: #fee2e2;
+  --traffic-red-text: #991b1b;
+  --traffic-red-border: #fca5a5;
+  --traffic-red-dot: #ef4444;
+
+  --traffic-neutral-bg: #f1f5f9;
+  --traffic-neutral-text: #475569;
+  --traffic-neutral-border: #cbd5e1;
+  --traffic-neutral-dot: #94a3b8;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+/* ============================================================
+   MODO TURNO NOCTURNO (DARK MODE)
+   ============================================================ */
+body.dark-mode {
+  --primary: #14b8a6;
+  --primary-hover: #2dd4bf;
+  --primary-light: #134e4a;
+  --primary-dark: #042f2e;
+
+  --bg-main: #0b1120;
+  --bg-card: #1e293b;
+  --border-color: #334155;
+  --border-focus: #14b8a6;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+
+  --traffic-green-bg: #064e3b;
+  --traffic-green-text: #6ee7b7;
+  --traffic-green-border: #059669;
+  --traffic-green-dot: #10b981;
+
+  --traffic-yellow-bg: #451a03;
+  --traffic-yellow-text: #fde047;
+  --traffic-yellow-border: #b45309;
+  --traffic-yellow-dot: #f59e0b;
+
+  --traffic-red-bg: #450a0a;
+  --traffic-red-text: #fca5a5;
+  --traffic-red-border: #b91c1c;
+  --traffic-red-dot: #ef4444;
+
+  --traffic-neutral-bg: #1e293b;
+  --traffic-neutral-text: #cbd5e1;
+  --traffic-neutral-border: #475569;
+  --traffic-neutral-dot: #64748b;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.5;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+}
+
+/* ============================================================
+   BOTÓN FLOTANTE: TURNO NOCTURNO
+   ============================================================ */
+.btn-floating-night {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #0f766e;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-floating-night svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-floating-night:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-floating-night:active {
+  transform: translateY(0);
+}
+
+body.dark-mode .btn-floating-night {
+  background: #1e293b;
+  color: #fde047;
+  border-color: #475569;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 480px) {
+  .night-label {
+    display: none;
+  }
+  .btn-floating-night {
+    padding: 8px;
+    border-radius: 50%;
+  }
+}
+
+.app-container {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 40px;
+  margin-top: 10px;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.app-header {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%);
+  color: #ffffff;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+body.dark-mode .app-header {
+  background: linear-gradient(135deg, #042f2e 0%, #0f766e 60%, #115e59 100%);
+  border: 1px solid #134e4a;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-right: 48px; /* Espacio para el botón de noche en móviles */
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #0f766e;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse-ring 2s infinite ease-in-out;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.header-titles h1 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.header-titles .subtitle {
+  font-size: 0.9rem;
+  opacity: 0.92;
+  margin-top: 4px;
+}
+
+.student-info-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.78rem;
+  background: rgba(0, 0, 0, 0.16);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  color: #f0fdfa;
+}
+
+.dot-separator {
+  opacity: 0.6;
+}
+
+/* ============================================================
+   Barra de Ajustes / Casos Rápidos
+   ============================================================ */
+.settings-bar {
+  background: var(--bg-card);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+@media (min-width: 600px) {
+  .settings-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.setting-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+}
+
+.select-chip {
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+}
+
+.select-chip:focus {
+  border-color: var(--primary);
+}
+
+.quick-cases {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quick-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.btn-chip {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-chip:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.btn-chip.chip-warn:hover {
+  background: var(--traffic-yellow-bg);
+  color: var(--traffic-yellow-text);
+}
+
+.btn-chip.chip-danger:hover {
+  background: var(--traffic-red-bg);
+  color: var(--traffic-red-text);
+}
+
+/* ============================================================
+   Banner de Alerta Global
+   ============================================================ */
+.status-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border-left: 6px solid var(--traffic-neutral-dot);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s ease;
+}
+
+.banner-icon {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--traffic-neutral-bg);
+  color: var(--traffic-neutral-text);
+}
+
+.banner-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.banner-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.banner-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Estados del Banner Global */
+.status-banner.banner-green {
+  background: var(--traffic-green-bg);
+  border-color: var(--traffic-green-border);
+  border-left-color: var(--traffic-green-dot);
+}
+.status-banner.banner-green .banner-icon {
+  background: var(--traffic-green-dot);
+  color: #ffffff;
+}
+.status-banner.banner-green .banner-title {
+  color: var(--traffic-green-text);
+}
+.status-banner.banner-green .banner-desc {
+  color: var(--traffic-green-text);
+}
+
+.status-banner.banner-yellow {
+  background: var(--traffic-yellow-bg);
+  border-color: var(--traffic-yellow-border);
+  border-left-color: var(--traffic-yellow-dot);
+}
+.status-banner.banner-yellow .banner-icon {
+  background: var(--traffic-yellow-dot);
+  color: #ffffff;
+}
+.status-banner.banner-yellow .banner-title {
+  color: var(--traffic-yellow-text);
+}
+.status-banner.banner-yellow .banner-desc {
+  color: var(--traffic-yellow-text);
+}
+
+.status-banner.banner-red {
+  background: var(--traffic-red-bg);
+  border-color: var(--traffic-red-border);
+  border-left-color: var(--traffic-red-dot);
+  animation: pulse-red 2s infinite ease-in-out;
+}
+.status-banner.banner-red .banner-icon {
+  background: var(--traffic-red-dot);
+  color: #ffffff;
+}
+.status-banner.banner-red .banner-title {
+  color: var(--traffic-red-text);
+}
+.status-banner.banner-red .banner-desc {
+  color: var(--traffic-red-text);
+  font-weight: 600;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* ============================================================
+   Tarjetas de Signos Vitales con Borde Dinámico según Estado
+   ============================================================ */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vital-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vital-card:focus-within {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* BORDES DINÁMICOS DE COLOR SEGÚN ESTADO (OPTIMIZACIÓN UX/UI) */
+.vital-card.card-border-green {
+  border-color: var(--traffic-green-dot) !important;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.22);
+}
+
+.vital-card.card-border-yellow {
+  border-color: var(--traffic-yellow-dot) !important;
+  box-shadow: 0 4px 14px rgba(234, 179, 8, 0.24);
+}
+
+.vital-card.card-border-red {
+  border-color: var(--traffic-red-dot) !important;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.vital-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vital-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+.vital-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.vital-icon.icon-pa { background: #fee2e2; color: #b91c1c; }
+.vital-icon.icon-fc { background: #fce7f3; color: #be185d; }
+.vital-icon.icon-fr { background: #e0f2fe; color: #0369a1; }
+.vital-icon.icon-temp { background: #ffedd5; color: #c2410c; }
+.vital-icon.icon-spo2 { background: #ccfbf1; color: #0f766e; }
+
+body.dark-mode .vital-icon.icon-pa { background: #450a0a; color: #fca5a5; }
+body.dark-mode .vital-icon.icon-fc { background: #500724; color: #f472b6; }
+body.dark-mode .vital-icon.icon-fr { background: #082f49; color: #7dd3fc; }
+body.dark-mode .vital-icon.icon-temp { background: #431407; color: #fdba74; }
+body.dark-mode .vital-icon.icon-spo2 { background: #042f2e; color: #5eead4; }
+
+.vital-title-wrap h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.vital-unit {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Badges de Semáforo */
+.traffic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.traffic-light {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge-neutral {
+  background: var(--traffic-neutral-bg);
+  color: var(--traffic-neutral-text);
+  border-color: var(--traffic-neutral-border);
+}
+.badge-neutral .traffic-light { background: var(--traffic-neutral-dot); }
+
+.badge-green {
+  background: var(--traffic-green-bg);
+  color: var(--traffic-green-text);
+  border-color: var(--traffic-green-border);
+}
+.badge-green .traffic-light { background: var(--traffic-green-dot); }
+
+.badge-yellow {
+  background: var(--traffic-yellow-bg);
+  color: var(--traffic-yellow-text);
+  border-color: var(--traffic-yellow-border);
+}
+.badge-yellow .traffic-light { background: var(--traffic-yellow-dot); }
+
+.badge-red {
+  background: var(--traffic-red-bg);
+  color: var(--traffic-red-text);
+  border-color: var(--traffic-red-border);
+}
+.badge-red .traffic-light { background: var(--traffic-red-dot); }
+
+/* Inputs */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dual-inputs {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.divider-slash {
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--text-light);
+  padding-bottom: 8px;
+  text-align: center;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.input-with-unit {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-unit input {
+  width: 100%;
+  padding: 12px 52px 12px 14px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.input-with-unit input:focus {
+  background: var(--bg-card);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+}
+
+body.dark-mode .input-with-unit input:focus {
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.3);
+}
+
+.unit-tag {
+  position: absolute;
+  right: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* ============================================================
+   MENSAJES DE ERROR DE VALIDACIÓN Y SEGURIDAD DE DATOS
+   ============================================================ */
+.field-error {
+  display: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  line-height: 1.35;
+  animation: shake-error 0.25s ease-in-out;
+}
+
+body.dark-mode .field-error {
+  background-color: #450a0a;
+  color: #fca5a5;
+  border-color: #991b1b;
+}
+
+.field-error.show {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@keyframes shake-error {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* ============================================================
+   CÁLCULO AUTOMÁTICO DE PAM (PRESIÓN ARTERIAL MEDIA)
+   ============================================================ */
+.pam-card {
+  background: var(--bg-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.pam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pam-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pam-chip {
+  font-size: 0.68rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  background: var(--traffic-neutral-bg);
+  color: var(--text-muted);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.pam-heading {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.pam-result-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pam-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.pam-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.pam-alert-box {
+  background: #fee2e2;
+  border: 1px solid #f87171;
+  color: #991b1b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: pulse-red 2s infinite ease-in-out;
+}
+
+body.dark-mode .pam-alert-box {
+  background: #500724;
+  border-color: #f43f5e;
+  color: #fecdd3;
+}
+
+/* Feedback Clínico */
+.clinical-feedback {
+  font-size: 0.85rem;
+  min-height: 20px;
+  display: none;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.clinical-feedback.show {
+  display: block;
+}
+
+.clinical-feedback.fb-green {
+  background: var(--traffic-green-bg);
+  color: var(--traffic-green-text);
+}
+.clinical-feedback.fb-yellow {
+  background: var(--traffic-yellow-bg);
+  color: var(--traffic-yellow-text);
+}
+.clinical-feedback.fb-red {
+  background: var(--traffic-red-bg);
+  color: var(--traffic-red-text);
+}
+
+/* Caja de Referencia Fisiológica */
+.reference-box {
+  background: var(--bg-main);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ref-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ref-ranges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ref-tag {
+  font-size: 0.72rem;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.tag-green { background: var(--traffic-green-bg); color: var(--traffic-green-text); }
+.tag-yellow { background: var(--traffic-yellow-bg); color: var(--traffic-yellow-text); }
+.tag-red { background: var(--traffic-red-bg); color: var(--traffic-red-text); }
+
+/* Botones de Acción */
+.form-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (min-width: 500px) {
+  .form-actions {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.btn-primary, .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border: 1.5px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+/* ============================================================
+   Sección de Reporte para Nota de Enfermería (SOAPIE)
+   ============================================================ */
+.report-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-color);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.report-header-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.report-header-title h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.report-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-light);
+  border: 1.5px solid var(--primary);
+  color: var(--primary-dark);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+body.dark-mode .btn-copy {
+  background: #134e4a;
+  color: #5eead4;
+  border-color: #14b8a6;
+}
+
+.btn-copy:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.report-box-wrap textarea {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.88rem;
+  background: var(--bg-main);
+  color: var(--text-main);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  resize: vertical;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.report-box-wrap textarea:focus {
+  border-color: var(--primary);
+}
+
+.report-guidance {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   Guía de Conducta según Semáforo
+   ============================================================ */
+.clinical-conduct-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.conduct-header h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.conduct-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 600px) {
+  .conduct-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.conduct-item {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 4px solid;
+}
+
+.conduct-item.item-green {
+  background: var(--traffic-green-bg);
+  border-left-color: var(--traffic-green-dot);
+}
+.conduct-item.item-yellow {
+  background: var(--traffic-yellow-bg);
+  border-left-color: var(--traffic-yellow-dot);
+}
+.conduct-item.item-red {
+  background: var(--traffic-red-bg);
+  border-left-color: var(--traffic-red-dot);
+}
+
+.conduct-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.green-pill { color: var(--traffic-green-text); }
+.yellow-pill { color: var(--traffic-yellow-text); }
+.red-pill { color: var(--traffic-red-text); }
+
+.conduct-item p {
+  font-size: 0.78rem;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   Footer y Legal
+   ============================================================ */
+.app-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.legal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.legal-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.legal-box ul {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legal-box strong {
+  color: var(--text-main);
+}
+
+.credits {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+/* Iconos SVG auxiliares */
+.icon-brand { width: 18px; height: 18px; }
+.icon-sm { width: 18px; height: 18px; }
+.icon-mini { width: 14px; height: 14px; min-width: 14px; }
+
+/* ============================================================
+   TOAST FLOTANTE (EXACTAMENTE 2 SEGUNDOS DE DURACIÓN)
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2000;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .toast {
+  background: #1e293b;
+  color: #6ee7b7;
+  border-color: #10b981;
+}
+
+.toast.toast-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

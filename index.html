@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SignosSemáforo | Validador Rápido de Signos Vitales (Adultos)</title>
+  <meta name="description" content="Validador rápido de signos vitales para adultos con semáforo clínico, cálculo de PAM y notas de enfermería en formato SOAPIE. Universidad de Boyacá.">
+  <meta name="theme-color" content="#0d9488">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Botón Flotante Superior: Modo Turno Nocturno -->
+  <button type="button" id="btn-dark-toggle" class="btn-floating-night" onclick="toggleModoNocturno()" aria-label="Cambiar modo turno nocturno">
+    <span id="night-icon">
+      <!-- Icono Luna por defecto -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </span>
+    <span id="night-text" class="night-label">Turno Nocturno</span>
+  </button>
+
+  <div class="app-container">
+    <!-- Header Institucional -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand-badge">
+          <svg class="icon-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/>
+          </svg>
+          <span>UNIBOYACÁ • ENFERMERÍA</span>
+        </div>
+        <div class="mode-badge">
+          <span class="pulse-dot"></span>
+          Adultos (≥ 18 años)
+        </div>
+      </div>
+
+      <div class="header-titles">
+        <h1>SignosSemáforo</h1>
+        <p class="subtitle">Validador Clínico Rápido • Cálculo de PAM • Notas SOAPIE</p>
+      </div>
+
+      <div class="student-info-strip">
+        <span><strong>Estudiante:</strong> William Esteban Forero Ojeda (Cód. 66625059)</span>
+        <span class="dot-separator">•</span>
+        <span>4.° Semestre — Práctica Hospitalaria</span>
+      </div>
+    </header>
+
+    <!-- Barra de Ajustes Rápidos (Altitud Tunja vs Estándar) -->
+    <div class="settings-bar">
+      <div class="setting-item">
+        <label for="altitude-mode" class="setting-label">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3l4 8 5-5 5 15H2L8 3z"/>
+          </svg>
+          Referencia SpO₂:
+        </label>
+        <select id="altitude-mode" class="select-chip">
+          <option value="tunja" selected>Tunja (2.810 msnm | Normal ≥90%)</option>
+          <option value="sea_level">Nivel del mar (Normal ≥95%)</option>
+        </select>
+      </div>
+
+      <!-- Casos rápidos para simulación o prueba rápida -->
+      <div class="quick-cases">
+        <span class="quick-label">Cargar caso:</span>
+        <button type="button" class="btn-chip" onclick="cargarEjemplo('normal')">Estable</button>
+        <button type="button" class="btn-chip chip-warn" onclick="cargarEjemplo('leve')">Alerta Leve</button>
+        <button type="button" class="btn-chip chip-danger" onclick="cargarEjemplo('critico')">Crítico</button>
+      </div>
+    </div>
+
+    <!-- Banner de Alerta Global Consolidada -->
+    <section id="global-status-banner" class="status-banner status-empty">
+      <div class="banner-icon" id="banner-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-title" id="banner-title">Esperando ingreso de signos vitales</div>
+        <div class="banner-desc" id="banner-desc">Ingrese los valores tomados al paciente adulto para obtener la clasificación inmediata en semáforo.</div>
+      </div>
+    </section>
+
+    <!-- Formulario de Signos Vitales -->
+    <main class="form-container">
+      <form id="vitals-form" autocomplete="off" onsubmit="event.preventDefault();">
+        
+        <!-- 1. PRESIÓN ARTERIAL Y CÁLCULO DE PAM -->
+        <article class="vital-card" id="card-pa">
+          <div class="card-header">
+            <div class="vital-title-wrap">
+              <div class="vital-icon icon-pa">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+              </div>
+              <div>
+                <h2>Presión Arterial (PA)</h2>
+                <span class="vital-unit">Milímetros de mercurio (mmHg)</span>
+              </div>
+            </div>
+            <div class="traffic-badge badge-neutral" id="badge-pa">
+              <span class="traffic-light"></span>
+              <span class="badge-text">Sin datos</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="dual-inputs">
+              <div class="input-field">
+                <label for="input-pas">Sistólica (PAS)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="input-pas" placeholder="120" min="40" max="300" step="1" inputmode="numeric">
+                  <span class="unit-tag">mmHg</span>
+                </div>
+              </div>
+              <div class="divider-slash">/</div>
+              <div class="input-field">
+                <label for="input-pad">Diastólica (PAD)</label>
+                <div class="input-with-unit">
+                  <input type="number" id="input-pad" placeholder="80" min="20" max="200" step="1" inputmode="numeric">
+                  <span class="unit-tag">mmHg</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mensaje de error de validación (PAS <= PAD) -->
+            <div class="field-error" id="error-pa"></div>
+
+            <!-- CÁLCULO AUTOMÁTICO DE PAM -->
+            <div class="pam-card" id="pam-box">
+              <div class="pam-header">
+                <div class="pam-title-wrap">
+                  <span class="pam-chip">Fórmula: (PAS + 2×PAD) / 3</span>
+                  <span class="pam-heading">Presión Arterial Media (PAM):</span>
+                </div>
+                <div class="pam-result-group">
+                  <span class="pam-value" id="pam-value">-- mmHg</span>
+                  <span class="pam-badge badge-neutral" id="pam-badge">Sin cálculo</span>
+                </div>
+              </div>
+              <div class="pam-alert-box" id="pam-alert" style="display: none;"></div>
+            </div>
+
+            <div class="clinical-feedback" id="feedback-pa"></div>
+
+            <div class="reference-box">
+              <div class="ref-title">
+                <svg class="icon-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                Rangos fisiológicos adultos (PA y PAM):
+              </div>
+              <div class="ref-ranges">
+                <span class="ref-tag tag-green">PA Normal: 90–120 / 60–80 mmHg</span>
+                <span class="ref-tag tag-green">PAM Normal: 70 – 105 mmHg</span>
+                <span class="ref-tag tag-yellow">PA Elevada: 121–139 / 81–89 mmHg</span>
+                <span class="ref-tag tag-red">Alerta Hipoperfusión: PAM &lt; 65 mmHg</span>
+                <span class="ref-tag tag-red">Alerta PA: &lt;90/60 ó ≥140/90 mmHg</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. FRECUENCIA CARDÍACA -->
+        <article class="vital-card" id="card-fc">
+          <div class="card-header">
+            <div class="vital-title-wrap">
+              <div class="vital-icon icon-fc">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </div>
+              <div>
+                <h2>Frecuencia Cardíaca (FC)</h2>
+                <span class="vital-unit">Pulso periférico / apical</span>
+              </div>
+            </div>
+            <div class="traffic-badge badge-neutral" id="badge-fc">
+              <span class="traffic-light"></span>
+              <span class="badge-text">Sin datos</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="input-field">
+              <label for="input-fc">Latidos por minuto</label>
+              <div class="input-with-unit">
+                <input type="number" id="input-fc" placeholder="75" min="1" max="260" step="1" inputmode="numeric">
+                <span class="unit-tag">lpm</span>
+              </div>
+            </div>
+
+            <!-- Error de validación FC -->
+            <div class="field-error" id="error-fc"></div>
+
+            <div class="clinical-feedback" id="feedback-fc"></div>
+
+            <div class="reference-box">
+              <div class="ref-title">
+                <svg class="icon-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                Rango fisiológico adulto:
+              </div>
+              <div class="ref-ranges">
+                <span class="ref-tag tag-green">Normocardia: 60 – 100 lpm</span>
+                <span class="ref-tag tag-yellow">50–59 lpm (Brad. leve) / 101–119 lpm (Taquic. leve)</span>
+                <span class="ref-tag tag-red">Alerta: &lt;50 lpm (Bradicardia) ó ≥120 lpm (Taquicardia)</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. FRECUENCIA RESPIRATORIA -->
+        <article class="vital-card" id="card-fr">
+          <div class="card-header">
+            <div class="vital-title-wrap">
+              <div class="vital-icon icon-fr">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                </svg>
+              </div>
+              <div>
+                <h2>Frecuencia Respiratoria (FR)</h2>
+                <span class="vital-unit">Ciclos ventilatorios por minuto</span>
+              </div>
+            </div>
+            <div class="traffic-badge badge-neutral" id="badge-fr">
+              <span class="traffic-light"></span>
+              <span class="badge-text">Sin datos</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="input-field">
+              <label for="input-fr">Respiraciones por minuto</label>
+              <div class="input-with-unit">
+                <input type="number" id="input-fr" placeholder="16" min="1" max="80" step="1" inputmode="numeric">
+                <span class="unit-tag">rpm</span>
+              </div>
+            </div>
+
+            <!-- Error de validación FR -->
+            <div class="field-error" id="error-fr"></div>
+
+            <div class="clinical-feedback" id="feedback-fr"></div>
+
+            <div class="reference-box">
+              <div class="ref-title">
+                <svg class="icon-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                Rango fisiológico adulto:
+              </div>
+              <div class="ref-ranges">
+                <span class="ref-tag tag-green">Eupnea: 12 – 20 rpm</span>
+                <span class="ref-tag tag-yellow">10–11 rpm (Brad. leve) / 21–24 rpm (Taquip. leve)</span>
+                <span class="ref-tag tag-red">Alerta: &lt;10 rpm (Bradipnea) ó ≥25 rpm (Taquipnea)</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. TEMPERATURA CORPORAL -->
+        <article class="vital-card" id="card-temp">
+          <div class="card-header">
+            <div class="vital-title-wrap">
+              <div class="vital-icon icon-temp">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h2>Temperatura Corporal (T°)</h2>
+                <span class="vital-unit">Grados Celsius (°C)</span>
+              </div>
+            </div>
+            <div class="traffic-badge badge-neutral" id="badge-temp">
+              <span class="traffic-light"></span>
+              <span class="badge-text">Sin datos</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="input-field">
+              <label for="input-temp">Temperatura axilar / timpánica</label>
+              <div class="input-with-unit">
+                <input type="number" id="input-temp" placeholder="36.5" min="25.0" max="45.0" step="0.1" inputmode="decimal">
+                <span class="unit-tag">°C</span>
+              </div>
+            </div>
+
+            <!-- Error de validación Temp -->
+            <div class="field-error" id="error-temp"></div>
+
+            <div class="clinical-feedback" id="feedback-temp"></div>
+
+            <div class="reference-box">
+              <div class="ref-title">
+                <svg class="icon-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                Rango fisiológico adulto:
+              </div>
+              <div class="ref-ranges">
+                <span class="ref-tag tag-green">Afebril (Normotermia): 36.0 – 37.5 °C</span>
+                <span class="ref-tag tag-yellow">37.6 – 37.9 °C (Febrícula) / 35.5 – 35.9 °C</span>
+                <span class="ref-tag tag-red">Alerta: ≥38.0 °C (Fiebre) ó &lt;35.5 °C (Hipotermia)</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5. SATURACIÓN DE OXÍGENO -->
+        <article class="vital-card" id="card-spo2">
+          <div class="card-header">
+            <div class="vital-title-wrap">
+              <div class="vital-icon icon-spo2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h2>Saturación de Oxígeno (SpO₂)</h2>
+                <span class="vital-unit">Pulsioximetría / Fracción aire ambiente</span>
+              </div>
+            </div>
+            <div class="traffic-badge badge-neutral" id="badge-spo2">
+              <span class="traffic-light"></span>
+              <span class="badge-text">Sin datos</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="input-field">
+              <label for="input-spo2">Porcentaje de saturación</label>
+              <div class="input-with-unit">
+                <input type="number" id="input-spo2" placeholder="94" min="0" max="100" step="1" inputmode="numeric">
+                <span class="unit-tag">%</span>
+              </div>
+            </div>
+
+            <!-- Error de validación SpO2 (no mayor a 100 ni menor a 0) -->
+            <div class="field-error" id="error-spo2"></div>
+
+            <div class="clinical-feedback" id="feedback-spo2"></div>
+
+            <div class="reference-box">
+              <div class="ref-title">
+                <svg class="icon-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                Rango fisiológico adulto (<span id="ref-altitude-label">Tunja ~2.810 m</span>):
+              </div>
+              <div class="ref-ranges" id="ref-spo2-ranges">
+                <span class="ref-tag tag-green">Adecuado en altura: ≥ 90%</span>
+                <span class="ref-tag tag-yellow">85 – 89% (Hipoxemia leve)</span>
+                <span class="ref-tag tag-red">Alerta: &lt; 85% (Hipoxemia severa)</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </form>
+
+      <!-- Botones de Acción Rápida -->
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" id="btn-reset" onclick="limpiarFormulario()">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Limpiar campos
+        </button>
+        <button type="button" class="btn-primary" id="btn-generate-report" onclick="generarReporte()">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          Generar Nota SOAPIE
+        </button>
+      </div>
+    </main>
+
+    <!-- Sección de Reporte Generado / Nota de Enfermería (SOAPIE) -->
+    <section class="report-section" id="report-section">
+      <div class="report-header">
+        <div class="report-header-title">
+          <svg class="icon-sm text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          </svg>
+          <div>
+            <h3>Nota de Evolución de Enfermería (Formato SOAPIE)</h3>
+            <span class="report-subtitle">Estructura estandarizada lista para Kardex e Historia Clínica</span>
+          </div>
+        </div>
+        <button type="button" class="btn-copy" id="btn-copy-report" onclick="copiarReporte()">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="copy-icon">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <span id="copy-text">Copiar nota</span>
+        </button>
+      </div>
+
+      <div class="report-box-wrap">
+        <textarea id="report-textarea" readonly rows="12" placeholder="La nota estructurada en formato SOAPIE se generará automáticamente aquí..."></textarea>
+      </div>
+
+      <div class="report-guidance">
+        <svg class="icon-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span>Estructura SOAPIE: <strong>S</strong>ubjetivo • <strong>O</strong>bjetivo (Signos + PAM) • <strong>A</strong>nálisis • <strong>P/I</strong>ntervención • <strong>E</strong>valuación. Cumple Habeas Data.</span>
+      </div>
+    </section>
+
+    <!-- Guía de Conducta para Estudiantes de 4.° Semestre -->
+    <section class="clinical-conduct-card">
+      <div class="conduct-header">
+        <h4>Conducta recomendada según el semáforo</h4>
+      </div>
+      <div class="conduct-grid">
+        <div class="conduct-item item-green">
+          <div class="conduct-pill green-pill">VERDE • Normal</div>
+          <p>Signos dentro de parámetros fisiológicos en adulto. Registrar en historia clínica y continuar con la monitorización de rutina según indicación médica.</p>
+        </div>
+        <div class="conduct-item item-yellow">
+          <div class="conduct-pill yellow-pill">AMARILLO • Alteración Leve</div>
+          <p>Verificar técnica de toma (posición del manguito, reposo previo de 5 min). Reevaluar en 15–30 minutos e informar a la enfermera de turno si persiste.</p>
+        </div>
+        <div class="conduct-item item-red">
+          <div class="conduct-pill red-pill">ROJO • Alerta de Servicio</div>
+          <p><strong>Acción prioritaria:</strong> Corroborar de inmediato y avisar verbalmente al docente supervisor o a la jefa de servicio. No abandonar al paciente si hay deterioro clínico.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Declaración de Límites / Descargo Médico / Habeas Data -->
+    <footer class="app-footer">
+      <div class="legal-box">
+        <div class="legal-title">
+          <svg class="icon-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Límites de Uso y Declaración del Sistema (PRD):
+        </div>
+        <ul>
+          <li><strong>Población exclusiva:</strong> Parámetros válidos <strong>únicamente para pacientes adultos</strong> (≥ 18 años). No aplicar en pediatría ni neonatología.</li>
+          <li><strong>No reemplaza el juicio clínico:</strong> Esta aplicación es una herramienta de apoyo pedagógico para estudiantes de la Universidad de Boyacá; no emite diagnósticos ni prescribe conductas terapéuticas.</li>
+          <li><strong>Privacidad (Habeas Data):</strong> No almacena ni transmite nombres, identificaciones ni datos confidenciales del paciente.</li>
+          <li><strong>100% Offline:</strong> Funciona sin conexión a internet en sótanos, salas de aislamiento y ascensores de práctica hospitalaria.</li>
+        </ul>
+      </div>
+
+      <div class="credits">
+        <p><strong>SignosSemáforo</strong> • Universidad de Boyacá • Facultad de Ciencias de la Salud</p>
+        <p>Diseñado por William Esteban Forero Ojeda (Cód. 66625059) • Docente: Santiago Correal</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast flotante emergente de 2 segundos -->
+  <div id="toast" class="toast">¡Nota copiada al portapapeles con éxito!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
